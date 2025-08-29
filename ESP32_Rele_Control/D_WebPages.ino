@@ -435,7 +435,7 @@ WiFi Configuration
 <input type="file" id="firmware-file" accept=".bin" style="display:none" onchange="updateFileName()">
 <div style="padding:12px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:5px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="document.getElementById('firmware-file').click()">
 <span id="file-name" style="color:var(--text-secondary)">No file selected</span>
-<span style="padding:8px 16px;background:#B84444;color:white;border-radius:4px;font-size:14px;font-weight:500">Browse</span>
+<span style="padding:8px 16px;background:#B84444;color:white;border-radius:4px;font-size:14px;font-weight:500;height:36px;display:inline-flex;align-items:center">Browse</span>
 </div>
 <div id="upload-progress" style="display:none;margin:15px 0">
 <div style="position:relative;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:8px;height:40px;overflow:hidden">
