@@ -433,7 +433,7 @@ WiFi Configuration
 <p style="color:var(--text-secondary);margin-bottom:15px">Upload a new firmware (.bin) file to update the device wirelessly.</p>
 <div style="margin-bottom:15px">
 <input type="file" id="firmware-file" accept=".bin" style="display:none" onchange="updateFileName()">
-<div style="padding:12px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:5px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="document.getElementById('firmware-file').click()">
+<div style="padding:12px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:5px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="document.getElementById('firmware-file').click()">
 <span id="file-name" style="color:var(--text-secondary)">No file selected</span>
 <span style="padding:8px 16px;background:#B84444;color:white;border-radius:4px;font-size:14px;font-weight:500">Browse</span>
 </div>
@@ -454,7 +454,7 @@ Upload Firmware
 </span>
 </button>
 </div>
-<div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,152,0,0.1);border:1px solid #FF9800;border-radius:5px;margin-top:15px">
+<div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,152,0,0.1);border:1px solid #FF9800;border-radius:5px;margin-top:25px">
 <svg width="24" height="24" viewBox="0 0 24 24" fill="#FF9800">
 <path d="M1 21L12 2l11 19H1zm11-3h2v-2h-2v2zm0-4h2v-4h-2v4z"/>
 </svg>
@@ -501,9 +501,9 @@ async function loadSavedNetworks(){
           </div>
           <div style="display:flex;gap:10px">
             <button class="button" onclick="useNetworkAutoConnect('${n.ssid}')" 
-                    style="background:#4CAF50;width:70px;height:36px;padding:8px;font-size:14px">Use</button>
+                    style="background:#4CAF50;height:36px;padding:8px 16px;font-size:14px;min-width:70px">Use</button>
             <button class="button" onclick="deleteNetwork('${n.ssid}')" 
-                    style="background:#B84444;width:70px;height:36px;padding:8px;font-size:14px">Del</button>
+                    style="background:#B84444;height:36px;padding:8px 16px;font-size:14px;min-width:70px">Del</button>
           </div>
         </div>`;
       });
