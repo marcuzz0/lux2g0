@@ -124,7 +124,40 @@ void connectToWiFi() {
     
   } else {
     wifiConnected = false;
-    Serial.printf("✗ Connection failed (Status: %d)\n", WiFi.status());
+    int status = WiFi.status();
+    Serial.printf("✗ Connection failed (Status: %d", status);
+    
+    // Add descriptive error message
+    switch(status) {
+      case 0:  // WL_IDLE_STATUS
+        Serial.print(" - Idle/Timeout");
+        break;
+      case 1:  // WL_NO_SSID_AVAIL
+        Serial.print(" - SSID not found");
+        break;
+      case 2:  // WL_SCAN_COMPLETED
+        Serial.print(" - Scan completed");
+        break;
+      case 3:  // WL_CONNECTED
+        Serial.print(" - Already connected");
+        break;
+      case 4:  // WL_CONNECT_FAILED
+        Serial.print(" - Connection failed");
+        break;
+      case 5:  // WL_CONNECTION_LOST
+        Serial.print(" - Connection lost");
+        break;
+      case 6:  // WL_WRONG_PASSWORD
+        Serial.print(" - Wrong password");
+        break;
+      case 255:  // WL_DISCONNECTED
+        Serial.print(" - Disconnected");
+        break;
+      default:
+        Serial.printf(" - Status code %d", status);
+    }
+    Serial.println(")");
+    
     // Keep AP active
     WiFi.mode(WIFI_AP);
     

@@ -325,6 +325,10 @@ void handleSetWiFiConfig() {
   strlcpy(currentConfig.password, doc["password"] | "", sizeof(currentConfig.password));
   currentConfig.useStaticIP = doc["staticIP"] | false;
   
+  // Debug output to verify what was saved
+  Serial.printf("Saving WiFi config: SSID='%s', Password length=%d\n", 
+                currentConfig.ssid, strlen(currentConfig.password));
+  
   if (currentConfig.useStaticIP) {
     String ip = doc["ip"] | "";
     String gw = doc["gateway"] | "";
