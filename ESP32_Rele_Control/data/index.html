@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>lux2g0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-primary:#0f0f14;--bg-secondary:#1a1a24;--bg-tertiary:#252533;--text-primary:#ffffff;--text-secondary:#b0b0b0;--accent:#d85652;--success:#4CAF50;--warning:#ffeb3b;--danger:#c94333;--info:#03a9f4;--purple:#9c27b0;--border:#2a2a3e;--header-bg:#d85652}
+body.light{--bg-primary:#f5f5f5;--bg-secondary:#fff;--bg-tertiary:#e0e0e0;--text-primary:#333;--text-secondary:#666;--accent:#2196F3;--warning:#FFC107;--danger:#f44336;--info:#03a9f4;--purple:#9c27b0;--border:#ddd;--header-bg:#2196F3}
+body{font-family:Arial,sans-serif;background:var(--bg-primary);color:var(--text-primary);margin:0;padding-top:60px;visibility:hidden}
+.header{position:fixed;top:0;left:0;right:0;height:60px;background:var(--header-bg);display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-shadow:0 2px 10px rgba(0,0,0,0.2);z-index:100}
+.header h1{color:#fff;font-size:24px;font-weight:600}
+.header-buttons{display:flex;gap:10px;align-items:center}
+.icon-button{background:rgba(255,255,255,0.2);border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}
+.icon-button:hover{background:rgba(255,255,255,0.3);transform:scale(1.05)}
+.icon-button svg{width:24px;height:24px;fill:white}
+.container{padding:20px}
+.section{background:var(--bg-secondary);border-radius:8px;padding:20px;margin-bottom:20px}
+.section h2{color:var(--accent);margin-bottom:15px}
+.status-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:15px}
+.status-item{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:var(--bg-tertiary);border-radius:5px}
+.status-label{color:var(--text-primary)}
+.status-value{color:var(--text-primary);font-weight:600}
+.status-value.online{color:var(--success)}
+.status-value.offline{color:var(--danger)}
+.relay-control{display:flex;justify-content:space-between;align-items:center;padding:15px;background:var(--bg-tertiary);border-radius:5px;margin-bottom:10px}
+.status{font-size:14px;color:var(--text-primary)}
+.status.on{color:#4CAF50;font-weight:bold}
+.status.off{color:var(--danger);font-weight:bold}
+.switch{position:relative;display:inline-block;width:60px;height:34px}
+.switch input{opacity:0;width:0;height:0}
+.switch input:disabled+.slider{opacity:0.5;cursor:not-allowed}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--text-secondary);border-radius:34px}
+.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background:white;transition:.4s;border-radius:50%}
+input:checked+.slider{background:var(--accent)}
+input:checked+.slider:before{transform:translateX(26px)}
+.mode-buttons{display:flex;gap:10px;margin-top:15px}
+.mode-button{flex:1;padding:10px;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:5px;color:var(--text-primary);cursor:pointer;transition:all 0.3s}
+.mode-button.active{border-color:var(--accent);background:var(--accent);color:white}
+.mode-button:hover{transform:translateY(-2px)}
+a{color:var(--info);text-decoration:none}
+.input-field{padding:5px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:5px;color:var(--text-primary)}
+.button{min-width:120px;height:48px;padding:12px 40px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;margin:5px;font-size:16px;font-weight:500;transition:all 0.3s ease;display:inline-flex;align-items:center;justify-content:center}
+.button:hover{opacity:0.9;transform:translateY(-1px)}
+.button:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+</style>
+<script>
+(function(){
+  if(localStorage.getItem('theme')==='light'){
+    document.documentElement.classList.add('light-theme');
+  }
+})();
+</script>
+</head>
+<body>
+<script>
+if(localStorage.getItem('theme')==='light'){document.body.classList.add('light');}
+document.body.style.visibility='visible';
+// Polyfill for deprecated setCapture
+if(!Element.prototype.setPointerCapture && Element.prototype.setCapture){
+  Element.prototype.setPointerCapture = Element.prototype.setCapture;
+}
+</script>
+<div class="header">
+<h1>lux2g0</h1>
+<div class="header-buttons">
+<button class="icon-button" onclick="location.href='/'">
+<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+</button>
+<button class="icon-button" onclick="location.href='/settings'">
+<svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.08-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.64-.07.97c0 .33.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.08.49 0 .61-.22l2-3.46c.13-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+</button>
+<button class="icon-button" onclick="location.href='/about'">
+<svg viewBox="0 0 24 24"><path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+</button>
+</div>
+</div>
+<div class="container">
+<div class="section">
+<h2>Status</h2>
+<div class="status-grid">
+<div class="status-item">
+<span class="status-label">Connection</span>
+<span id="connection" class="status-value online">Connected</span>
+</div>
+<div class="status-item">
+<span class="status-label">WiFi Network</span>
+<span id="network" class="status-value offline">Not connected</span>
+</div>
+<div class="status-item">
+<span class="status-label">AP IP</span>
+<span id="ap-ip" class="status-value">192.168.4.1</span>
+</div>
+<div class="status-item">
+<span class="status-label">Local IP</span>
+<span id="local-ip" class="status-value">Not connected</span>
+</div>
+<div class="status-item">
+<span class="status-label">AP Clients</span>
+<span id="ap-clients" class="status-value">0</span>
+</div>
+<div class="status-item">
+<span class="status-label">Mode</span>
+<span id="mode-status" class="status-value">Manual</span>
+</div>
+</div>
+</div>
+<div class="section">
+<h2>Operation Mode</h2>
+<div class="mode-buttons">
+<button class="mode-button" id="mode-0" onclick="setMode(0)">Manual</button>
+<button class="mode-button" id="mode-1" onclick="setMode(1)">LDR</button>
+<button class="mode-button" id="mode-2" onclick="setMode(2)">Scheduled</button>
+</div>
+<div id="mode-options" style="margin-top:15px">
+<div id="ldr-options" style="display:none">
+<div class="status-item" style="margin-top:10px">
+<span class="status-label">LDR Value</span>
+<span id="ldr-value" class="status-value">0</span>
+</div>
+<div class="status-item">
+<span class="status-label">Threshold</span>
+<input type="number" id="ldr-threshold" min="0" max="4095" value="500" style="width:80px;text-align:right" onchange="setThreshold(this.value)" class="input-field">
+</div>
+</div>
+<div id="schedule-options" style="display:none">
+<div class="status-item" style="margin-top:10px">
+<span class="status-label">NTP Time</span>
+<span id="ntp-time" style="font-size:14px;color:var(--text-primary);font-weight:normal">--:--:--</span>
+</div>
+<div class="status-grid" style="margin-top:10px">
+<div class="status-item">
+<span class="status-label">Turn ON at</span>
+<input type="time" id="on-time" value="08:00:00" step="1" class="input-field" style="width:auto;text-align:right" onchange="updateSchedule()">
+</div>
+<div class="status-item">
+<span class="status-label">Turn OFF at</span>
+<input type="time" id="off-time" value="20:00:00" step="1" class="input-field" style="width:auto;text-align:right" onchange="updateSchedule()">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section">
+<h2>Relay Control</h2>
+<div class="relay-control">
+<div>
+<h3>Relay 1</h3>
+<span id="status1" class="status">OFF</span>
+</div>
+<label class="switch">
+<input type="checkbox" id="relay1" onchange="toggleRelay(1,this.checked)">
+<span class="slider"></span>
+</label>
+</div>
+<div class="relay-control">
+<div>
+<h3>Relay 2</h3>
+<span id="status2" class="status">OFF</span>
+</div>
+<label class="switch">
+<input type="checkbox" id="relay2" onchange="toggleRelay(2,this.checked)">
+<span class="slider"></span>
+</label>
+</div>
+</div>
+</div>
+<script>
+async function toggleRelay(n,s){
+  // Prevent toggle if disabled
+  if(document.getElementById('relay'+n).disabled){
+    return;
+  }
+  const r=await fetch('/api/control',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({rele:n,state:s})
+  });
+  if(r.ok){
+    const d=await r.json();
+    updateStatus(d);
+  }else if(r.status===403){
+    // If forbidden (not in manual mode), refresh status
+    getStatus();
+  }
+}
+async function setMode(m){
+  const r=await fetch('/api/auto',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({mode:m})
+  });
+  if(r.ok){
+    const d=await r.json();
+    updateStatus(d);
+  }
+}
+function updateStatus(d){
+  if(d.rele1!==undefined){
+    document.getElementById('relay1').checked=d.rele1;
+    document.getElementById('status1').textContent=d.rele1?'ON':'OFF';
+    document.getElementById('status1').className=d.rele1?'status on':'status off';
+  }
+  if(d.rele2!==undefined){
+    document.getElementById('relay2').checked=d.rele2;
+    document.getElementById('status2').textContent=d.rele2?'ON':'OFF';
+    document.getElementById('status2').className=d.rele2?'status on':'status off';
+  }
+  if(d.mode!==undefined){
+    document.querySelectorAll('.mode-button').forEach(b=>b.classList.remove('active'));
+    document.getElementById('mode-'+d.mode).classList.add('active');
+    const modeNames=['Manual','LDR','Scheduled'];
+    document.getElementById('mode-status').textContent=modeNames[d.mode];
+    document.getElementById('mode-status').className='status-value';
+    // Disable relay buttons if not in manual mode
+    const isManual = d.mode === 0;
+    document.getElementById('relay1').disabled = !isManual;
+    document.getElementById('relay2').disabled = !isManual;
+    // Show/hide mode options
+    document.getElementById('ldr-options').style.display = d.mode === 1 ? 'block' : 'none';
+    document.getElementById('schedule-options').style.display = d.mode === 2 ? 'block' : 'none';
+  }
+  if(d.ldrValue!==undefined){
+    document.getElementById('ldr-value').textContent = d.ldrValue + ' (' + d.ldrPercent + '%)';
+  }
+  if(d.ldrThreshold!==undefined){
+    document.getElementById('ldr-threshold').value = d.ldrThreshold;
+  }
+  if(d.schedule){
+    document.getElementById('on-time').value = 
+      String(d.schedule.onHour).padStart(2,'0') + ':' + 
+      String(d.schedule.onMinute).padStart(2,'0');
+    document.getElementById('off-time').value = 
+      String(d.schedule.offHour).padStart(2,'0') + ':' + 
+      String(d.schedule.offMinute).padStart(2,'0');
+  }
+  if(d.currentTime){
+    document.getElementById('ntp-time').textContent = d.currentTime;
+  }
+  if(d.wifiConnected!==undefined){
+    // Connection shows Connected (green) when in AP mode or connected to WiFi
+    document.getElementById('connection').textContent='Connected';
+    document.getElementById('connection').className='status-value online';
+  }
+  
+  // Show WiFi network info
+  if(d.networkSSID!==undefined){
+    document.getElementById('network').textContent=d.networkSSID;
+    document.getElementById('network').className=d.wifiConnected?'status-value online':'status-value offline';
+  }
+  
+  // Show both IPs
+  if(d.apIP){
+    document.getElementById('ap-ip').textContent=d.apIP;
+  }
+  if(d.localIP && d.wifiConnected){
+    document.getElementById('local-ip').textContent=d.localIP;
+  }else{
+    document.getElementById('local-ip').textContent='Not connected';
+  }
+  
+  // Show AP clients count
+  if(d.apClients!==undefined){
+    document.getElementById('ap-clients').textContent=d.apClients;
+  }
+  
+  // Disable Scheduled button if no NTP sync
+  if(d.ntpSynced!==undefined){
+    const scheduledBtn = document.getElementById('mode-2');
+    scheduledBtn.disabled = !d.ntpSynced;
+    if(!d.ntpSynced){
+      scheduledBtn.title = 'Internet connection required for NTP sync';
+      scheduledBtn.style.opacity = '0.5';
+      scheduledBtn.style.cursor = 'not-allowed';
+    }else{
+      scheduledBtn.title = '';
+      scheduledBtn.style.opacity = '1';
+      scheduledBtn.style.cursor = 'pointer';
+    }
+  }
+  if(d.schedule){
+    // Update schedule time inputs with seconds
+    const onTime = `${String(d.schedule.onHour).padStart(2,'0')}:${String(d.schedule.onMinute).padStart(2,'0')}:${String(d.schedule.onSecond || 0).padStart(2,'0')}`;
+    const offTime = `${String(d.schedule.offHour).padStart(2,'0')}:${String(d.schedule.offMinute).padStart(2,'0')}:${String(d.schedule.offSecond || 0).padStart(2,'0')}`;
+    const onTimeInput = document.getElementById('on-time');
+    const offTimeInput = document.getElementById('off-time');
+    if(onTimeInput) onTimeInput.value = onTime;
+    if(offTimeInput) offTimeInput.value = offTime;
+  }
+}
+async function getStatus(){
+  try{
+    const r=await fetch('/api/status');
+    if(r.ok){
+      const d=await r.json();
+      updateStatus(d);
+    }
+  }catch(e){}
+}
+async function setThreshold(value){
+  // Validate value
+  const val = parseInt(value);
+  if(val < 0 || val > 4095) return;
+  
+  const r = await fetch('/api/threshold',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({threshold:val})
+  });
+  if(r.ok){
+    const d = await r.json();
+    updateStatus(d);
+  }
+}
+async function updateSchedule(){
+  const onTime = document.getElementById('on-time').value.split(':');
+  const offTime = document.getElementById('off-time').value.split(':');
+  const r = await fetch('/api/schedule',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      onHour:parseInt(onTime[0]),
+      onMinute:parseInt(onTime[1]),
+      onSecond:parseInt(onTime[2] || 0),
+      offHour:parseInt(offTime[0]),
+      offMinute:parseInt(offTime[1]),
+      offSecond:parseInt(offTime[2] || 0)
+    })
+  });
+  if(r.ok){
+    const d = await r.json();
+    updateStatus(d);
+  }
+}
+setInterval(getStatus,2000);
+getStatus();
+</script>
+</body>

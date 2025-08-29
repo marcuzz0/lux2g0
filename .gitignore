@@ -1,0 +1,25 @@
+# Arduino build files
+*.hex
+*.elf
+*.bin
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Local files to ignore
+rele.zip
+fix_arduino_linking.md
